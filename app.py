@@ -23,7 +23,12 @@ def process():
     result = serveEqPuzzle(n1, n2, n3, n4, goal)
     print("after serveEqPuzzle: n1=",n1, ", goal=",goal,", result=",result)
 
-    return render_template("index.html", input1=n1, input2=n2, input3=n3, input4=n4, input5=goal, output_area=result)
+    retExps = []
+    for sol in result:
+        print(sol.expression)
+        retExps.append(sol.expression)
+
+    return render_template("index.html", input1=n1, input2=n2, input3=n3, input4=n4, input5=goal, output_area=retExps)
 
 
 if __name__ == "__main__":

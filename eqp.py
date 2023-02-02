@@ -3,6 +3,7 @@ import sys
 
 from itertools import permutations,product
 
+#--------------------------------------------------------
 class eqCandidate:
     def __init__(self,expression, result):
         self.expression = expression
@@ -11,6 +12,7 @@ class eqCandidate:
     def print_info(self):
         print(f"Expression: {self.expression}, Result: {self.result}")
 
+#--------------------------------------------------------
 class eqParams:
     def __init__(self,numbers, goal):
         self.numbers = numbers
@@ -19,10 +21,11 @@ class eqParams:
     def print_info(self):
         print(f"Numbers: {self.numbers}, Goal: {self.goal}")
 
+#--------------------------------------------------------
 # generate expressions for each number permutation against operation permutations
 # and then all parenthesized orderings
 # and then evaluate the expression to calculate the result
-
+#--------------------------------------------------------
 def evaluateExpression(expression, goal, solutions):
     try:
         result = eval(expression)
@@ -36,6 +39,7 @@ def evaluateExpression(expression, goal, solutions):
             solution.print_info()
             solutions.append(solution)
 
+#--------------------------------------------------------
 def getParamsFromCsv(csvFileName):
     with open(csvFileName, 'r') as file:
         reader = csv.reader(file)
@@ -43,6 +47,7 @@ def getParamsFromCsv(csvFileName):
             print(row)
             return eqParams( [row[0], row[1], row[2], row[3]], int(row[4]))
 
+#--------------------------------------------------------
 def getParamsFromCmdLine():
 # Check that 5 arguments were passed
 
@@ -70,6 +75,7 @@ def getParamsFromCmdLine():
 msg = "Hello World"
 print(msg)
 
+#--------------------------------------------------------
 def algEqPuzzle(eqparams):
     numberPermutations = []
     uniqueNumberPermutations = []
@@ -107,16 +113,21 @@ def algEqPuzzle(eqparams):
             expression = str("(" + np[0] + op[0] + np[1] + ")" + op[1] + "(" + np[2] + op[2] + np[3] +")")
             evaluateExpression(expression, eqparams.goal, solutions)
 
-    for sol in solutions:
-        print("First solution expression is ", sol.expression)
-        return sol.expression
+    return solutions
 
+    # for sol in solutions:
+       #print("First solution expression is ", sol.expression)
+       #return sol.expression
+
+#--------------------------------------------------------
 def serveEqPuzzle(n1, n2, n3, n4, goal):
     eqparams = eqParams([n1, n2, n3, n4], int(goal))
     return algEqPuzzle(eqparams)
 
+#--------------------------------------------------------
 eqparams = getParamsFromCmdLine()
 algEqPuzzle(eqparams)
+
 
 # called from flask ui
 # result = serveEqPuzzle(n1, n2, n3, n4, goal)

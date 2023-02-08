@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index6.html')
 
 
 # called from flask ui
@@ -28,7 +28,7 @@ def process():
         print(sol.expression)
         retExps.append(sol.expression)
 
-    return render_template("index.html", input1=n1, input2=n2, input3=n3, input4=n4, input5=goal, output_area=retExps)
+    return render_template("index6.html", input1=n1, input2=n2, input3=n3, input4=n4, input5=goal, output_area=retExps)
 
 #---------------------------------
 if __name__ == "__main__":

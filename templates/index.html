@@ -1,65 +1,90 @@
-<!DOCTYPE html>
 <html>
-<head>
-  <style>
-    /* Define a container for the input fields */
-    .input-container {
-      display: flex; /* Enable flexbox */
-      flex-wrap: wrap; /* Allow items to wrap to a new line */
-    }
-    /* Define a style for each input field */
-    .input-field {
-      flex: 1; /* Take up equal amount of space */
-      text-align: center; /* Center the label and input */
-      margin: 10px; /* Add some margin around the field */
-    }
-    /* Define a style for the center input field */
-    #input5 {
-      text-align: center; /* Center the input */
-    }
-    /* Define a style for the output field */
-    #output {
-      width: 100%; /* Take up the full width of the container */
-      height: 100px; /* Set the height of the field */
-      margin: 10px; /* Add some margin around the field */
-    }
-    /* Define a style for the submit button */
-    button[type="submit"] {
-      margin: 10px; /* Add some margin around the button */
-    }
-  </style>
-</head>
-<body>
-  <form action="/submit" method="POST">
-    <div class="input-container">
-      <div class="input-field">
-        <label for="input1">Top Left</label>
-        <input type="text" id="input1" name="input1" value="{{ input1 }}">
+  <head>
+    <style>
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: lightgray;
+        padding: 20px;
+        box-shadow: 10px 10px 5px #888888;
+      }
+
+      .row {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 20px;
+      }
+
+      .input {
+        width: 100px;
+        height: 30px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+        box-shadow: 10px 10px 5px #888888;
+        text-align: center;
+      }
+
+      .label {
+        font-size: 20px;
+        margin-right: 10px;
+      }
+
+      .submit-button {
+        width: 100px;
+        height: 30px;
+        margin-top: 20px;
+        border: none;
+        border-radius: 5px;
+        background-color: lightblue;
+        box-shadow: 10px 10px 5px #888888;
+        cursor: pointer;
+      }
+
+      .output {
+        width: 50%;
+        height: 100px;
+        margin-top: 20px;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        box-shadow: 10px 10px 5px #888888;
+        overflow-y: scroll;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/submit" method="POST">
+    <div class="container">
+      <div class="row">
+        <div class="label">n1:</div>
+        <input id="n1" class="input" type="text" name="n1" value="{{ n1 }}" />
+        <div class="label">n2:</div>
+        <input id="n2" class="input" type="text" name="n2" value="{{ n2 }}" />
       </div>
-      <div class="input-field">
-        <label for="input2">Top Right</label>
-        <input type="text" id="input1" name="input2" value="{{ input2 }}">
+      <div class="row">
+        <div class="label">n3:</div>
+        <input id="n3" class="input" type="text" name="n3" value="{{ n3 }}" />
+        <div class="label">n4:</div>
+        <input id="n4" class="input" type="text" name="n4" value="{{ n4 }}" />
       </div>
-      <div class="input-field">
-        <label for="input3">Bottom Left</label>
-        <input type="text" id="input3" name="input3" value="{{ input3 }}">
+      <div class="label">Goal:</div>
+      <input id="goal" class="input" type="text" name="goal" value="{{ goal }}" />
+
+      <div class="row">
+      <button type="submit" class="submit-button">Submit</button>
       </div>
-      <div class="input-field">
-        <label for="input4">Bottom Right</label>
-        <input type="text" id="input4" name="input4" value="{{ input4 }}">
+
+      <div class="row">
       </div>
-      <div class="input-field">
-        <label for="input5">Center</label>
-        <input type="text" id="input5" name="input5" value="{{ input5 }}">
-      </div>
+
+      <div class="label">Expressions:</div>
+      <textarea id="expressions" class="output" name="expressions">{{ expressions }}</textarea>
+
     </div>
-    <div>
-      <label for="output_area">Output:</label>
-      <textarea id="output_area" name="output_area">{{ output_area }}</textarea>
-    </div>
-    <div>
-      <button type="submit">Submit</button>
-    </div>
-  </form>
-</body>
+    </form>
+
+  </body>
 </html>

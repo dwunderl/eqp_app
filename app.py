@@ -18,10 +18,10 @@ def process():
     n3 = request.form["n3"]
     n4 = request.form["n4"]
     goal = request.form["goal"]
-    print("before serveEqPuzzle: n1=",n1, ", goal=",goal)
+    #print("before serveEqPuzzle: n1=",n1, ", goal=",goal)
 
     result = serveEqPuzzle(n1, n2, n3, n4, goal)
-    print("after serveEqPuzzle: n1=",n1, ", goal=",goal,", result=",result)
+    #print("after serveEqPuzzle: n1=",n1, ", goal=",goal,", result=",result)
 
     retExps = []
     for sol in result:

@@ -104,14 +104,28 @@ def algEqPuzzle(eqparams):
 
         for op in operationPermutations:
             #print(op)
-            expression = str("(" + np[0] + op[0] + "(" + np[1] + op[1] + np[2] + "))" + op[2] + np[3])
+
+            # Order of operations = 1, 2, 3
+            expression = str("((" + np[0] + op[0] + np[1] + ")" + op[1] + np[2] + ")" + op[2] + np[3])
             evaluateExpression(expression, eqparams.goal, solutions)
-            expression = str(np[0] + op[0] + "((" + np[1] + op[1] + np[2] + ")" + op[2] + np[3] +")")
-            evaluateExpression(expression, eqparams.goal, solutions)
-            expression = str(np[0] + op[0] + "(" + np[1] + op[1] + "(" + np[2] + op[2] + np[3] +"))")
-            evaluateExpression(expression, eqparams.goal, solutions)
+
+            # Order of operations = 1, 3, 2
             expression = str("(" + np[0] + op[0] + np[1] + ")" + op[1] + "(" + np[2] + op[2] + np[3] +")")
             evaluateExpression(expression, eqparams.goal, solutions)
+
+            # Order of operations = 2, 1, 3
+            expression = str("(" + np[0] + op[0] + "(" + np[1] + op[1] + np[2] + "))" + op[2] + np[3])
+            evaluateExpression(expression, eqparams.goal, solutions)
+
+            # Order of operations = 2, 3, 1
+            expression = str(np[0] + op[0] + "((" + np[1] + op[1] + np[2] + ")" + op[2] + np[3] +")")
+            evaluateExpression(expression, eqparams.goal, solutions)
+
+            # Order of operations = 3, 2, 1
+            expression = str(np[0] + op[0] + "(" + np[1] + op[1] + "(" + np[2] + op[2] + np[3] +"))")
+            evaluateExpression(expression, eqparams.goal, solutions)
+
+
 
     return solutions
 
@@ -125,8 +139,10 @@ def serveEqPuzzle(n1, n2, n3, n4, goal):
     return algEqPuzzle(eqparams)
 
 #--------------------------------------------------------
-eqparams = getParamsFromCmdLine()
-algEqPuzzle(eqparams)
+if __name__ == "__main__":
+    # app.run()
+    eqparams = getParamsFromCmdLine()
+    algEqPuzzle(eqparams)
 
 
 # called from flask ui

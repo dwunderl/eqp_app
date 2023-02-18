@@ -20,15 +20,21 @@ def process():
     goal = request.form["goal"]
     #print("before serveEqPuzzle: n1=",n1, ", goal=",goal)
 
-    result = serveEqPuzzle(n1, n2, n3, n4, goal)
+    familiesOfExpressions = serveEqPuzzle(n1, n2, n3, n4, goal)
     #print("after serveEqPuzzle: n1=",n1, ", goal=",goal,", result=",result)
 
     retExps = []
-    for sol in result:
-        print(sol.expression)
-        retExps.append(sol.expression)
+    for familyName, solutions in familiesOfExpressions.items():
+        retExps.append("FamilyName: " + familyName)
+        for sol in solutions:
+            retExps.append(sol.expression)
+        retExps.append("")
+        
+    # concatenate the list items with line breaks
+    retExpsString = "\n".join(retExps)
 
-    return render_template("index.html", n1=n1, n2=n2, n3=n3, n4=n4, goal=goal, expressions=retExps)
+
+    return render_template("index.html", n1=n1, n2=n2, n3=n3, n4=n4, goal=goal, expressions=retExpsString)
 
 #---------------------------------
 if __name__ == "__main__":

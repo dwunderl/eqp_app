@@ -26,7 +26,7 @@ class eqParams:
 # and then all parenthesized orderings
 # and then evaluate the expression to calculate the result
 #--------------------------------------------------------
-def evaluateExpression(expression, goal, solutions):
+def evaluateExpression(expression, goal, opFamilyName, solutions):
     try:
         result = eval(expression)
     except ZeroDivisionError:
@@ -37,7 +37,10 @@ def evaluateExpression(expression, goal, solutions):
         if result == goal:
             solution = eqCandidate(expression, result)
             solution.print_info()
-            solutions.append(solution)
+            if opFamilyName not in solutions:
+                solutions[opFamilyName] = []
+            solutions[opFamilyName].append(solution)
+            #solutions.append(solution)
 
 #--------------------------------------------------------
 def getParamsFromCsv(csvFileName):
@@ -76,6 +79,22 @@ msg = "Hello World"
 print(msg)
 
 #--------------------------------------------------------
+def getOpFamilyName(ops):
+    opFamilyName = ""
+    for i in range(3):
+        if ops[i][0] == '*' or ops[i] == '/':
+            opId = 'M'
+            opNum = 1
+            for j in range(1,3):
+                if ops[i][j] != 'X':
+                    opNum = opNum * int(ops[i][j])
+            opId = opId + str(opNum)
+            opFamilyName = opId + opFamilyName
+        elif ops[i][0] == '+' or ops[i][0] == '-':
+            opFamilyName = opFamilyName + 'A'
+    return opFamilyName
+
+#--------------------------------------------------------
 def algEqPuzzle(eqparams):
     numberPermutations = []
     uniqueNumberPermutations = []
@@ -91,15 +110,17 @@ def algEqPuzzle(eqparams):
 
     # Operations permutation generation
 
-    operations = ["+", "-", "*","/"]
+    operations = ["+", "-", "*", "/"]
     operationPermutations = product(operations, repeat=3)
 
     # for operationPermutation in operationPermutations:
     #     print(operationPermutation)
 
-    solutions = []
+    # solutions is a dictionary of expression solutions keyed by familyname
+    solutions = {}
     for np in uniqueNumberPermutations:
         print(np)
+        # find all permutations of 3 operations allowing repetition
         operationPermutations = product(operations, repeat=3)
 
         for op in operationPermutations:
@@ -107,25 +128,28 @@ def algEqPuzzle(eqparams):
 
             # Order of operations = 1, 2, 3
             expression = str("((" + np[0] + op[0] + np[1] + ")" + op[1] + np[2] + ")" + op[2] + np[3])
-            evaluateExpression(expression, eqparams.goal, solutions)
+            opFamilyName = getOpFamilyName( ((op[0],np[0],np[1]), (op[1],'X',np[2]), (op[2],'X',np[3])))
+            evaluateExpression(expression, eqparams.goal, opFamilyName, solutions)
 
             # Order of operations = 1, 3, 2
             expression = str("(" + np[0] + op[0] + np[1] + ")" + op[1] + "(" + np[2] + op[2] + np[3] +")")
-            evaluateExpression(expression, eqparams.goal, solutions)
+            opFamilyName = getOpFamilyName( ((op[0],np[0],np[1]), (op[2],np[2],np[3]), (op[1],'X','X')))
+            evaluateExpression(expression, eqparams.goal, opFamilyName, solutions)
 
             # Order of operations = 2, 1, 3
             expression = str("(" + np[0] + op[0] + "(" + np[1] + op[1] + np[2] + "))" + op[2] + np[3])
-            evaluateExpression(expression, eqparams.goal, solutions)
+            opFamilyName = getOpFamilyName( ((op[1],np[1],np[2]), (op[0],np[0],'X'), (op[2],'X',np[3])))
+            evaluateExpression(expression, eqparams.goal, opFamilyName, solutions)
 
             # Order of operations = 2, 3, 1
             expression = str(np[0] + op[0] + "((" + np[1] + op[1] + np[2] + ")" + op[2] + np[3] +")")
-            evaluateExpression(expression, eqparams.goal, solutions)
+            opFamilyName = getOpFamilyName( ((op[1],np[1],np[2]), (op[2],'X',np[3]), (op[0],np[0],'X')))
+            evaluateExpression(expression, eqparams.goal, opFamilyName, solutions)
 
             # Order of operations = 3, 2, 1
             expression = str(np[0] + op[0] + "(" + np[1] + op[1] + "(" + np[2] + op[2] + np[3] +"))")
-            evaluateExpression(expression, eqparams.goal, solutions)
-
-
+            opFamilyName = getOpFamilyName( ((op[2],np[2],np[3]), (op[1],np[1],'X'), (op[0],np[0],'X')))
+            evaluateExpression(expression, eqparams.goal, opFamilyName, solutions)
 
     return solutions
 
@@ -142,7 +166,12 @@ def serveEqPuzzle(n1, n2, n3, n4, goal):
 if __name__ == "__main__":
     # app.run()
     eqparams = getParamsFromCmdLine()
-    algEqPuzzle(eqparams)
+    familiesOfExpressions = algEqPuzzle(eqparams)
+    # Iterate through the dictionary using items()
+    for familyName, solutions in familiesOfExpressions.items():
+        print("FamilyName: " + familyName)
+        for sol in solutions:
+            print(sol.expression)
 
 
 # called from flask ui

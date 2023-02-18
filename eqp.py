@@ -80,18 +80,20 @@ print(msg)
 
 #--------------------------------------------------------
 def getOpFamilyName(ops):
-    opFamilyName = ""
+    opIds = []
     for i in range(3):
-        if ops[i][0] == '*' or ops[i][0] == r'/':
+        if ops[i][0] == '*' or ops[i][0] == '/':
             opId = 'M'
-            opNum = 1
-            for j in range(1,3):
-                if ops[i][j] != 'X':
-                    opNum = opNum * int(ops[i][j])
-            opId = opId + str(opNum)
-            opFamilyName = opId + opFamilyName
         elif ops[i][0] == '+' or ops[i][0] == '-':
-            opFamilyName = opFamilyName + 'A'
+            opId = 'A'
+        opNum = 1
+        for j in range(1,3):
+            if ops[i][j] != 'X':
+                opNum = opNum * int(ops[i][j])
+        opId = opId + str(opNum)
+        opIds.append(opId)
+    opFamilyName = ''.join(sorted(opIds, reverse=True))
+
     return opFamilyName
 
 #--------------------------------------------------------

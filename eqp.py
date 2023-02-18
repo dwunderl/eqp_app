@@ -82,7 +82,7 @@ print(msg)
 def getOpFamilyName(ops):
     opFamilyName = ""
     for i in range(3):
-        if ops[i][0] == '*' or ops[i] == '/':
+        if ops[i][0] == '*' or ops[i][0] == r'/':
             opId = 'M'
             opNum = 1
             for j in range(1,3):

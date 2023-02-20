@@ -43,6 +43,80 @@ def evaluateExpression(expression, goal, opFamilyName, solutions):
             #solutions.append(solution)
 
 #--------------------------------------------------------
+def makeExprFamilyName(exprTokens):
+    LookingForLHS = 1
+    LookingForOp  = 2
+    LookingForRHS = 3
+
+    expr = []
+    exprs = []
+
+    eState = LookingForLHS
+
+    for token in exprTokens:
+        if eState == LookingForLHS:
+            if type(token) == int:
+                expr.append(token)
+                eState = LookingForOp
+            elif token == '(':
+                continue
+            elif token == ')':
+                expr.append('X')
+                eState = LookingForOp
+            elif token in "+-*/":
+                expr.append('X')
+                expr.append(token)
+                eState = LookingForRHS
+            else:
+                print("Error in makeExprFamilyName: LookingForLHS found: " + token)
+        elif eState == LookingForOp:
+            if token in "+-*/":
+                expr.insert(token, 0)
+                eState = LookingForRHS
+            else:
+                print("Error in makeExprFamilyName: LookingForOp found: " + token)
+        elif eState == LookingForRHS:
+            if type(token) == int:
+                expr.append(token)
+                exprCopy = expr.copy()
+                exprs.append(exprCopy)
+                expr = []
+            elif token == '(':
+                expr.append('X')
+                exprCopy = expr.copy()
+                exprs.append(exprCopy)
+                expr = []
+            else:
+                print("Error in makeExprFamilyName: LookingForRHS found: " + token)
+    exprFamilyName = getOpFamilyName(exprs)
+    return exprFamilName
+
+#--------------------------------------------------------
+
+# evalExpression(  (o1, n1, n2),  (o2, x, n3),  (o3, x, n4) )
+# construct expression
+# eval the exxpression
+# if meets goal then
+#     get FamilyName and save in solutions
+def evalExpression(exprTokens, goal, solutions):
+    expression = ''.join(exprTokens)
+    try:
+        result = eval(expression)
+    except ZeroDivisionError:
+        print("You can't divide by zero!")
+        result = -999
+    finally:
+        #print (expression + " == " + str(result))
+        if result == goal:
+            solution = eqCandidate(expression, result)
+            solution.print_info()
+            exprFamilyName = makeExprFamilyName(exprTokens)
+            if exprFamilyName not in solutions:
+                solutions[exprFamilyName] = []
+            solutions[exprFamilyName].append(solution)
+            #solutions.append(solution)
+
+#--------------------------------------------------------
 def getParamsFromCsv(csvFileName):
     with open(csvFileName, 'r') as file:
         reader = csv.reader(file)
@@ -80,6 +154,8 @@ print(msg)
 
 #--------------------------------------------------------
 def getOpFamilyName(ops):
+    print("ops in getOpFamilyName: ")
+    print(ops)
     opIds = []
     for i in range(3):
         if ops[i][0] == '*' or ops[i][0] == '/':
@@ -121,19 +197,37 @@ def algEqPuzzle(eqparams):
     # solutions is a dictionary of expression solutions keyed by familyname
     solutions = {}
     for np in uniqueNumberPermutations:
-        print(np)
+        # print(np)
+        n1, n2, n3, n4 = np
+
         # find all permutations of 3 operations allowing repetition
         operationPermutations = product(operations, repeat=3)
 
         for op in operationPermutations:
             #print(op)
+            o1, o2, o3 = op
+            x = 'X'  # intermediate result
 
             # Order of operations = 1, 2, 3
+            exprTokens = ["(", "(", n1, o1, n2, ")", o2, n3, ")", o3, n4]
+            evalExpression(exprTokens, eqparams.goal, solutions)
+
+
             expression = str("((" + np[0] + op[0] + np[1] + ")" + op[1] + np[2] + ")" + op[2] + np[3])
-            opFamilyName = getOpFamilyName( ((op[0],np[0],np[1]), (op[1],'X',np[2]), (op[2],'X',np[3])))
+            opFamilyName = getOpFamilyName( ((op[0],np[0],np[1]), (op[1],'X',np[2]), (op[2],'X',np[3])))  # pass this to evaluate expression
             evaluateExpression(expression, eqparams.goal, opFamilyName, solutions)
 
+            # evalExpression(  (o1, n1, n2),  (o2, x, n3),  (o3, x, n4) )
+
+            # convert operations and numbers to variables
+            # make 'X' a variable
+            # pass the 3 tuples to evaluate expression
+            # ee will construct the expression, evaluate it, check the answer, generate family name, store result
+
+
             # Order of operations = 1, 3, 2
+            # evalExpression(  (o1, n1, n2),  (o3, n3, n4),  (o2, x, x) )
+
             expression = str("(" + np[0] + op[0] + np[1] + ")" + op[1] + "(" + np[2] + op[2] + np[3] +")")
             opFamilyName = getOpFamilyName( ((op[0],np[0],np[1]), (op[2],np[2],np[3]), (op[1],'X','X')))
             evaluateExpression(expression, eqparams.goal, opFamilyName, solutions)

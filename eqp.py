@@ -58,6 +58,8 @@ def makeExprFamilyName(exprTokens):
             if token in "+-*/":
                 expr.insert(0, token)
                 eState = LookingForRHS
+            elif token == ')':
+                continue
             else:
                 print("Error in makeExprFamilyName: LookingForOp found: " + token)
         elif eState == LookingForRHS:
@@ -142,10 +144,13 @@ def getOpFamilyName(ops):
         elif ops[i][0] == '+' or ops[i][0] == '-':
             opId = 'A'
         opNum = 1
-        for j in range(1,3):
-            if ops[i][j] != 'X':
-                opNum = opNum * int(ops[i][j])
-        opId = opId + str(opNum)
+        # append multiplication discrimination numbers
+        # to uniquely identify different expressions best
+        if (opId == 'M'):
+            for j in range(1,3):
+                if ops[i][j] != 'X':
+                    opNum = opNum * int(ops[i][j])
+            opId = opId + str(opNum)
         opIds.append(opId)
     opFamilyName = ''.join(sorted(opIds, reverse=True))
 
